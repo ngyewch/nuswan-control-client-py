@@ -1,0 +1,2 @@
+marshmallow==3.5.1
+websocket_client==0.57.0
