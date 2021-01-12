@@ -7,9 +7,12 @@ from .schema import GeofenceUpdateReqSchema, MissionMsgSchema, MissionCommandsSc
 
 class Request:
 
-    def __init__(self, msg_type: str, vehicle_id: str, *, msg_id: str = str(uuid.uuid4())):
+    def __init__(self, msg_type: str, vehicle_id: str, *, msg_id: str = None):
         self.vehicle_id = vehicle_id
-        self.msg_id = msg_id
+        if msg_id is None:
+            self.msg_id = str(uuid.uuid4())
+        else:
+            self.msg_id = msg_id
         self.msg_type = msg_type
 
 
@@ -53,7 +56,7 @@ class Mission:
 class GeofenceUpdateReq(Request):
     __schema__ = GeofenceUpdateReqSchema()
 
-    def __init__(self, vehicle_id: str, *, msg_id: str = str(uuid.uuid4()), geofence_coordinates: List[Point2D]):
+    def __init__(self, vehicle_id: str, *, msg_id: str = None, geofence_coordinates: List[Point2D]):
         Request.__init__(self, 'GeofenceUpdateReq', vehicle_id, msg_id=msg_id)
         self.geofence_coordinates = geofence_coordinates
 
@@ -61,7 +64,7 @@ class GeofenceUpdateReq(Request):
 class MissionMsg(Request):
     __schema__ = MissionMsgSchema()
 
-    def __init__(self, vehicle_id: str, *, msg_id: str = str(uuid.uuid4()), geofence_coordinates: List[Point2D],
+    def __init__(self, vehicle_id: str, *, msg_id: str = None, geofence_coordinates: List[Point2D],
                  missions: List[Mission]):
         Request.__init__(self, 'MissionMsg', vehicle_id, msg_id=msg_id)
         self.geofence_coordinates = geofence_coordinates
@@ -71,7 +74,7 @@ class MissionMsg(Request):
 class MissionCommands(Request):
     __schema__ = MissionCommandsSchema()
 
-    def __init__(self, vehicle_id: str, *, msg_id: str = str(uuid.uuid4()),
+    def __init__(self, vehicle_id: str, *, msg_id: str = None,
                  timestamp: int = int(round(time.time() * 1000)), mission_id: int, mission_command: str):
         Request.__init__(self, 'MissionCommands', vehicle_id, msg_id=msg_id)
         self.timestamp = timestamp
